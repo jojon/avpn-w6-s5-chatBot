@@ -18,26 +18,18 @@ const geminiModels = {
     document: 'gemini-2.5-flash-lite'
 };
 
-// inisialisasi aplikasi back-end/server
-app.use(cors()); // .use() --> panggil/bikin middleware
-// app.use(() => {}); --> pakai middleware sendiri
-app.use(express.json()); // --> untuk membolehkan kita menggunakan 'Content-Type: application/json' di header
-app.use(express.static('public')); // --> ketika diakses di http://localhost:[PORT]
+app.use(cors()); 
 
-// inisialisasi route-nya
-// .get(), .post(), .put(), .patch(), .delete() --> yang paling umum dipakai
-// .options() --> lebih jarang dipakai, karena ini lebih ke preflight (untuk CORS umumnya)
+app.use(express.json()); 
+app.use(express.static('public'));
 
 app.post('/generate-text', async (req, res) => {
-  // handle bagaimana request diterima oleh user
+  
   const { message } = req.body || {};
 
-  // guard clause --> satpam
-  // req.body = [] // typeof --> object; Array.isArray(isi) // true
-  // req.body = {} // typeof --> object; Array.isArray(isi) // false
   if (!message || typeof message !== 'string') {
     res.status(400).json({ message: "Pesan tidak ada atau format-nya tidak sesuai." });
-    return; // keluar lebih awal dari handler
+    return; 
   }
 
   const response = await ai.models.generateContent({
@@ -54,7 +46,7 @@ app.post('/chat', async (req, res) => {
   const { conversation } = req.body;
   // const conversation = req.body.conversation;
 
-  // Guard clause 1 -- cek conversation-nya itu array atau bukan
+  // Guard clause 1 
   if (!conversation || !Array.isArray(conversation)) {
     res.status(400).json({
       success: false,
@@ -63,7 +55,7 @@ app.post('/chat', async (req, res) => {
     });
   }
 
-  // Guard clause 2 -- cek integritas data-nya
+  // Guard clause 2
   let dataIsInvalid = false; // semantic
 
   conversation.forEach(item => {
@@ -114,9 +106,7 @@ app.post('/chat', async (req, res) => {
   }
 });
 
-// panggil si app-nya di sini
 const port = 3000;
-
 app.listen(port, () => {
     console.log("I LOVE YOU", port);
 });
